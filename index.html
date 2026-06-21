@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MetaVoxa — An institutional ecosystem for surfacing what systems do not see.</title>
+    <meta name="description" content="MetaVoxa is an institutional ecosystem built across five rooms: Atrium, Labs, Press, Research, and Founder. Surfacing what systems do not see.">
+
+    <!-- Schema.org -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "MetaVoxa",
+      "url": "https://metavoxa.com",
+      "sameAs": [
+        "https://open.substack.com/pub/metavoxa",
+        "https://www.linkedin.com/in/martha-koroma-67a28b191",
+        "https://www.instagram.com/kwissbae",
+        "https://orcid.org/0000-0003-4152-3863",
+        "https://www.marthakoroma.com",
+        "https://cra.marthakoroma.com",
+        "https://github.com/semresident222-collab"
+      ],
+      "founder": {
+        "@type": "Person",
+        "name": "Martha Wuya Koroma",
+        "url": "https://www.marthakoroma.com"
+      }
+    }
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-deep: #0a0a0a;
+            --bg-charcoal: #111111;
+            --bg-panel: #1a1a1a;
+            --gold-primary: #c9a96e;
+            --gold-bright: #d4af37;
+            --gold-dim: #8a7350;
+            --text-primary: #e8e0d4;
+            --text-secondary: #a89b8c;
+            --text-muted: #6b5f52;
+            --border-subtle: rgba(201, 169, 110, 0.15);
+            --border-glow: rgba(201, 169, 110, 0.3);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-deep);
+            color: var(--text-primary);
+            line-height: 1.7;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ===== INTRO OVERLAY ===== */
+        .intro-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background: var(--bg-deep);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 1.2s cubic-bezier(0.23, 1, 0.32, 1), visibility 1.2s;
+        }
+
+        .intro-overlay.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .intro-seal-container {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .intro-seal {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid rgba(201, 169, 110, 0.3);
+            animation: seal-spin-scale 3.5s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+            filter: drop-shadow(0 0 30px rgba(201, 169, 110, 0.2));
+        }
+
+        @keyframes seal-spin-scale {
+            0% { transform: scale(0.3) rotate(-180deg); opacity: 0; }
+            40% { transform: scale(1) rotate(0deg); opacity: 1; }
+            70% { transform: scale(1.05) rotate(0deg); opacity: 1; }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+
+        .intro-title {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(1.5rem, 4vw, 2.5rem);
+            font-weight: 400;
+            letter-spacing: 0.35em;
+            color: var(--gold-primary);
+            opacity: 0;
+            animation: fade-in 1s ease-out 1.5s forwards;
+        }
+
+        .intro-divider {
+            width: 40px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--gold-primary), transparent);
+            opacity: 0;
+            animation: fade-in 1s ease-out 1.8s forwards;
+        }
+
+        .intro-tagline {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1rem;
+            font-weight: 300;
+            font-style: italic;
+            color: var(--text-secondary);
+            opacity: 0;
+            animation: fade-in 1s ease-out 2.1s forwards;
+        }
+
+        .intro-skip {
+            position: absolute;
+            bottom: 3rem;
+            font-family: 'Cinzel', serif;
+            font-size: 0.7rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            background: none;
+            border: 1px solid var(--border-subtle);
+            padding: 0.6rem 1.5rem;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            opacity: 0;
+            animation: fade-in 1s ease-out 2.5s forwards;
+        }
+
+        .intro-skip:hover {
+            color: var(--gold-bright);
+            border-color: var(--gold-primary);
+            background: rgba(201, 169, 110, 0.05);
+        }
+
+        @keyframes fade-in {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes stamp-press {
+            0% { transform: scale(1); }
+            30% { transform: scale(1.15); }
+            60% { transform: scale(0.95); }
+            100% { transform: scale(1); opacity: 0; }
+        }
+
+        .intro-overlay.stamping .intro-seal {
+            animation: stamp-press 0.8s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+        }
+
+        .intro-overlay.stamping .intro-title,
+        .intro-overlay.stamping .intro-divider,
+        .intro-overlay.stamping .intro-tagline,
+        .intro-overlay.stamping .intro-skip {
+            animation: fade-out 0.5s ease-out forwards;
+        }
+
+        @keyframes fade-out {
+            to { opacity: 0; }
+        }
+
+        /* ===== MAIN LANDING ===== */
+        .main-landing {
+            opacity: 0;
+            transition: opacity 1.5s ease-out;
+        }
+
+        .main-landing.visible {
+            opacity: 1;
+        }
+
+        /* ===== HEADER ===== */
+        .site-header {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 50;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 3rem;
+            background: linear-gradient(to bottom, rgba(10,10,10,0.9) 0%, rgba(10,10,10,0.5) 60%, transparent 100%);
+            backdrop-filter: blur(8px);
+        }
+
+        .header-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+        }
+
+        .header-seal {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid rgba(201, 169, 110, 0.3);
+        }
+
+        .header-title {
+            font-family: 'Cinzel', serif;
+            font-size: 0.9rem;
+            letter-spacing: 0.25em;
+            color: var(--gold-primary);
+        }
+
+        .header-about {
+            font-family: 'Cinzel', serif;
+            font-size: 0.7rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: color 0.4s ease;
+        }
+
+        .header-about:hover {
+            color: var(--gold-primary);
+        }
+
+        .header-about::after {
+            content: '';
+            width: 5px; height: 5px;
+            border-radius: 50%;
+            background: var(--gold-primary);
+            display: inline-block;
+        }
+
+        /* ===== HERO SECTION ===== */
+        .landing-hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 6rem 2rem 3rem;
+            position: relative;
+        }
+
+        .landing-hero::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(ellipse at center top, rgba(201, 169, 110, 0.04) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        .landing-hero h1 {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(2.5rem, 6vw, 5rem);
+            font-weight: 400;
+            letter-spacing: 0.3em;
+            color: var(--gold-primary);
+            margin-bottom: 1rem;
+        }
+
+        .hero-star {
+            color: var(--gold-bright);
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+            animation: star-pulse 3s ease-in-out infinite;
+        }
+
+        @keyframes star-pulse {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        .landing-hero .tagline {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(1rem, 2vw, 1.3rem);
+            font-weight: 300;
+            font-style: italic;
+            color: var(--text-secondary);
+            max-width: 500px;
+            line-height: 1.6;
+        }
+
+        .tagline em {
+            color: var(--gold-dim);
+        }
+
+        /* ===== DESKTOP: ALL-FIVE PANORAMIC ===== */
+        .doors-section {
+            display: block;
+            padding: 2rem 3rem 4rem;
+        }
+
+        .panoramic-container {
+            position: relative;
+            max-width: 1400px;
+            margin: 0 auto;
+            aspect-ratio: 16 / 9;
+            min-height: 500px;
+            overflow: hidden;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .panoramic-bg {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            object-fit: cover;
+            filter: brightness(0.5) saturate(0.7);
+            transition: all 0.8s ease;
+        }
+
+        .panoramic-container:hover .panoramic-bg {
+            filter: brightness(0.55) saturate(0.75);
+        }
+
+        .panoramic-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(to bottom, rgba(10,10,10,0.3) 0%, transparent 30%, rgba(10,10,10,0.6) 100%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .doors-overlay {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            display: flex;
+            z-index: 2;
+        }
+
+        .door-zone {
+            flex: 1;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            text-align: center;
+            padding: 2rem 1rem;
+            text-decoration: none;
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            border-right: 1px solid rgba(201, 169, 110, 0.08);
+        }
+
+        .door-zone:last-child {
+            border-right: none;
+        }
+
+        .door-zone::before {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 0;
+            background: linear-gradient(to top, rgba(201, 169, 110, 0.12), transparent);
+            transition: height 0.5s ease;
+            pointer-events: none;
+        }
+
+        .door-zone:hover::before {
+            height: 70%;
+        }
+
+        .door-zone::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 3px; height: 0;
+            background: linear-gradient(to bottom, var(--gold-primary), transparent);
+            transition: height 0.5s ease;
+        }
+
+        .door-zone:hover::after {
+            height: 100%;
+        }
+
+        .door-zone-content {
+            position: relative;
+            z-index: 3;
+            transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .door-zone:hover .door-zone-content {
+            transform: translateY(-10px);
+        }
+
+        .door-zone-name {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(0.9rem, 1.5vw, 1.4rem);
+            font-weight: 500;
+            letter-spacing: 0.18em;
+            color: var(--gold-primary);
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+            transition: color 0.4s ease;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+        }
+
+        .door-zone:hover .door-zone-name {
+            color: var(--gold-bright);
+        }
+
+        .door-zone-star {
+            color: var(--gold-dim);
+            font-size: 0.6rem;
+            margin-bottom: 0.5rem;
+            transition: color 0.4s ease;
+            text-shadow: 0 1px 5px rgba(0,0,0,0.8);
+        }
+
+        .door-zone:hover .door-zone-star {
+            color: var(--gold-bright);
+        }
+
+        .door-zone-desc {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(0.75rem, 1.1vw, 1rem);
+            font-weight: 300;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            max-width: 200px;
+            transition: color 0.4s ease;
+            text-shadow: 0 1px 8px rgba(0,0,0,0.9);
+        }
+
+        .door-zone:hover .door-zone-desc {
+            color: var(--text-primary);
+        }
+
+        .door-zone-line {
+            width: 25px;
+            height: 1px;
+            background: var(--gold-dim);
+            margin: 1rem auto 0;
+            transition: all 0.4s ease;
+        }
+
+        .door-zone:hover .door-zone-line {
+            width: 40px;
+            background: var(--gold-primary);
+        }
+
+        /* Dim non-hovered zones */
+        .doors-overlay:has(.door-zone:hover) .door-zone:not(:hover) {
+            opacity: 0.4;
+        }
+
+        .doors-overlay:has(.door-zone:hover) .door-zone:not(:hover) .door-zone-name,
+        .doors-overlay:has(.door-zone:hover) .door-zone:not(:hover) .door-zone-desc {
+            opacity: 0.5;
+        }
+
+        /* ===== MOBILE CAROUSEL ===== */
+        .carousel-section {
+            display: none;
+            padding: 2rem 0 4rem;
+            overflow: hidden;
+        }
+
+        .carousel-track {
+            display: flex;
+            transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            cursor: grab;
+        }
+
+        .carousel-track:active {
+            cursor: grabbing;
+        }
+
+        .carousel-slide {
+            min-width: 85vw;
+            max-width: 400px;
+            height: 70vh;
+            min-height: 450px;
+            margin-right: 1rem;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--border-subtle);
+            flex-shrink: 0;
+            text-decoration: none;
+        }
+
+        .carousel-slide:first-child {
+            margin-left: 7.5vw;
+        }
+
+        .carousel-slide-bg {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            object-fit: cover;
+            filter: brightness(0.5) saturate(0.7);
+        }
+
+        .carousel-slide::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(to bottom, transparent 30%, rgba(10,10,10,0.95) 100%);
+            z-index: 1;
+        }
+
+        .carousel-slide-content {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            z-index: 2;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .carousel-slide-name {
+            font-family: 'Cinzel', serif;
+            font-size: 1.5rem;
+            letter-spacing: 0.2em;
+            color: var(--gold-primary);
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+
+        .carousel-slide-star {
+            color: var(--gold-dim);
+            font-size: 0.7rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .carousel-slide-desc {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1rem;
+            font-weight: 300;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .carousel-slide-line {
+            width: 30px;
+            height: 1px;
+            background: var(--gold-dim);
+            margin: 1rem auto 0;
+        }
+
+        .carousel-indicators {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .carousel-dot {
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: var(--text-muted);
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 0;
+        }
+
+        .carousel-dot.active {
+            background: var(--gold-primary);
+            box-shadow: 0 0 8px rgba(201, 169, 110, 0.5);
+        }
+
+        /* ===== FOOTER ===== */
+        .site-footer {
+            text-align: center;
+            padding: 2rem;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .footer-pillars {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-pillar {
+            font-family: 'Cinzel', serif;
+            font-size: 0.6rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+
+        .footer-domain {
+            font-family: 'Cinzel', serif;
+            font-size: 0.8rem;
+            letter-spacing: 0.25em;
+            color: var(--gold-dim);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .site-header {
+                padding: 1rem 1.5rem;
+            }
+
+            .header-title {
+                font-size: 0.75rem;
+                letter-spacing: 0.2em;
+            }
+
+            .doors-section {
+                display: none;
+            }
+
+            .carousel-section {
+                display: block;
+            }
+
+            .landing-hero {
+                min-height: auto;
+                padding: 5rem 1.5rem 2rem;
+            }
+
+            .landing-hero h1 {
+                font-size: 2rem;
+                letter-spacing: 0.2em;
+            }
+
+            .intro-seal {
+                width: 80px;
+                height: 80px;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .carousel-section {
+                display: none !important;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .intro-seal, .intro-title, .intro-divider, .intro-tagline, .intro-skip,
+            .door-zone, .panoramic-bg, .hero-star {
+                animation: none !important;
+                transition: none !important;
+            }
+            .intro-overlay { display: none; }
+            .main-landing { opacity: 1; }
+        }
+    </style>
+<base target="_blank">
+</head>
+<body>
+
+    <!-- INTRO OVERLAY -->
+    <div class="intro-overlay" id="introOverlay">
+        <div class="intro-seal-container">
+            <img src="seal.jpg" alt="MetaVoxa Wax Seal" class="intro-seal" id="introSeal">
+            <h2 class="intro-title">METAVOXA</h2>
+            <div class="intro-divider"></div>
+            <p class="intro-tagline">An institutional ecosystem</p>
+        </div>
+        <button class="intro-skip" id="skipBtn">Skip Intro</button>
+    </div>
+
+    <!-- MAIN LANDING -->
+    <div class="main-landing" id="mainLanding">
+
+        <!-- HEADER -->
+        <header class="site-header">
+            <a href="index.html" class="header-logo">
+                <img src="seal.jpg" alt="MetaVoxa" class="header-seal">
+                <span class="header-title">METAVOXA</span>
+            </a>
+            <a href="about.html" class="header-about">About</a>
+        </header>
+
+        <!-- HERO -->
+        <section class="landing-hero">
+            <h1>METAVOXA</h1>
+            <div class="hero-star">✦</div>
+            <p class="tagline">An institutional ecosystem for surfacing <em>what systems do not see.</em></p>
+        </section>
+
+        <!-- DESKTOP: ALL-FIVE PANORAMIC -->
+        <section class="doors-section" id="doorsSection">
+            <div class="panoramic-container">
+                <img src="all-five.jpg" alt="MetaVoxa — Five Rooms" class="panoramic-bg">
+                <div class="panoramic-overlay"></div>
+                <div class="doors-overlay">
+                    <a href="https://github.com/semresident222-collab/metavoxa-atrium" class="door-zone" target="_blank" rel="noopener">
+                        <div class="door-zone-content">
+                            <h2 class="door-zone-name">Atrium</h2>
+                            <div class="door-zone-star">✦</div>
+                            <p class="door-zone-desc">The full architecture of the mind behind the work.</p>
+                            <div class="door-zone-line"></div>
+                        </div>
+                    </a>
+                    <a href="https://github.com/semresident222-collab/metavoxa-labs" class="door-zone" target="_blank" rel="noopener">
+                        <div class="door-zone-content">
+                            <h2 class="door-zone-name">Labs</h2>
+                            <div class="door-zone-star">✦</div>
+                            <p class="door-zone-desc">Where questions are investigated and frameworks are built.</p>
+                            <div class="door-zone-line"></div>
+                        </div>
+                    </a>
+                    <a href="https://github.com/semresident222-collab/metavoxa-press" class="door-zone" target="_blank" rel="noopener">
+                        <div class="door-zone-content">
+                            <h2 class="door-zone-name">Press</h2>
+                            <div class="door-zone-star">✦</div>
+                            <p class="door-zone-desc">Where lived experience becomes language.</p>
+                            <div class="door-zone-line"></div>
+                        </div>
+                    </a>
+                    <a href="https://github.com/semresident222-collab/metavoxa-research" class="door-zone" target="_blank" rel="noopener">
+                        <div class="door-zone-content">
+                            <h2 class="door-zone-name">Research</h2>
+                            <div class="door-zone-star">✦</div>
+                            <p class="door-zone-desc">Where evidence is recorded, verified, and made available.</p>
+                            <div class="door-zone-line"></div>
+                        </div>
+                    </a>
+                    <a href="https://www.marthakoroma.com" class="door-zone" target="_blank" rel="noopener">
+                        <div class="door-zone-content">
+                            <h2 class="door-zone-name">Founder</h2>
+                            <div class="door-zone-star">✦</div>
+                            <p class="door-zone-desc">The work, trajectory, and perspective behind MetaVoxa.</p>
+                            <div class="door-zone-line"></div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- MOBILE CAROUSEL -->
+        <section class="carousel-section" id="carouselSection">
+            <div class="carousel-track" id="carouselTrack">
+                <a href="https://github.com/semresident222-collab/metavoxa-atrium" class="carousel-slide" target="_blank" rel="noopener">
+                    <img src="atrium.jpg" alt="Atrium" class="carousel-slide-bg">
+                    <div class="carousel-slide-content">
+                        <h2 class="carousel-slide-name">Atrium</h2>
+                        <div class="carousel-slide-star">✦</div>
+                        <p class="carousel-slide-desc">The full architecture of the mind behind the work.</p>
+                        <div class="carousel-slide-line"></div>
+                    </div>
+                </a>
+                <a href="https://github.com/semresident222-collab/metavoxa-labs" class="carousel-slide" target="_blank" rel="noopener">
+                    <img src="labs.jpg" alt="Labs" class="carousel-slide-bg">
+                    <div class="carousel-slide-content">
+                        <h2 class="carousel-slide-name">Labs</h2>
+                        <div class="carousel-slide-star">✦</div>
+                        <p class="carousel-slide-desc">Where questions are investigated and frameworks are built.</p>
+                        <div class="carousel-slide-line"></div>
+                    </div>
+                </a>
+                <a href="https://github.com/semresident222-collab/metavoxa-press" class="carousel-slide" target="_blank" rel="noopener">
+                    <img src="press.jpg" alt="Press" class="carousel-slide-bg">
+                    <div class="carousel-slide-content">
+                        <h2 class="carousel-slide-name">Press</h2>
+                        <div class="carousel-slide-star">✦</div>
+                        <p class="carousel-slide-desc">Where lived experience becomes language.</p>
+                        <div class="carousel-slide-line"></div>
+                    </div>
+                </a>
+                <a href="https://github.com/semresident222-collab/metavoxa-research" class="carousel-slide" target="_blank" rel="noopener">
+                    <img src="research.jpg" alt="Research" class="carousel-slide-bg">
+                    <div class="carousel-slide-content">
+                        <h2 class="carousel-slide-name">Research</h2>
+                        <div class="carousel-slide-star">✦</div>
+                        <p class="carousel-slide-desc">Where evidence is recorded, verified, and made available.</p>
+                        <div class="carousel-slide-line"></div>
+                    </div>
+                </a>
+                <a href="https://www.marthakoroma.com" class="carousel-slide" target="_blank" rel="noopener">
+                    <img src="founder.jpg" alt="Founder" class="carousel-slide-bg">
+                    <div class="carousel-slide-content">
+                        <h2 class="carousel-slide-name">Founder</h2>
+                        <div class="carousel-slide-star">✦</div>
+                        <p class="carousel-slide-desc">The work, trajectory, and perspective behind MetaVoxa.</p>
+                        <div class="carousel-slide-line"></div>
+                    </div>
+                </a>
+            </div>
+            <div class="carousel-indicators" id="carouselIndicators"></div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="site-footer">
+            <div class="footer-pillars">
+                <span class="footer-pillar">Systems-Aware</span>
+                <span class="footer-pillar">•</span>
+                <span class="footer-pillar">Evidence-Driven</span>
+                <span class="footer-pillar">•</span>
+                <span class="footer-pillar">Interdisciplinary</span>
+                <span class="footer-pillar">•</span>
+                <span class="footer-pillar">Inclusive</span>
+                <span class="footer-pillar">•</span>
+                <span class="footer-pillar">Institutional</span>
+            </div>
+            <p class="footer-domain">METAVOXA.COM</p>
+        </footer>
+
+    </div>
+
+    <script>
+        // ===== INTRO ANIMATION =====
+        const introOverlay = document.getElementById('introOverlay');
+        const mainLanding = document.getElementById('mainLanding');
+        const skipBtn = document.getElementById('skipBtn');
+        const introSeal = document.getElementById('introSeal');
+
+        const hasSeenIntro = localStorage.getItem('metavoxa-intro-seen');
+
+        function endIntro() {
+            introOverlay.classList.add('stamping');
+            setTimeout(() => {
+                introOverlay.classList.add('hidden');
+                mainLanding.classList.add('visible');
+                localStorage.setItem('metavoxa-intro-seen', 'true');
+            }, 800);
+        }
+
+        if (hasSeenIntro) {
+            introOverlay.style.display = 'none';
+            mainLanding.classList.add('visible');
+        } else {
+            setTimeout(endIntro, 4200);
+            skipBtn.addEventListener('click', () => {
+                endIntro();
+            });
+        }
+
+        // ===== MOBILE CAROUSEL =====
+        const track = document.getElementById('carouselTrack');
+        const indicatorsContainer = document.getElementById('carouselIndicators');
+        const slides = track.querySelectorAll('.carousel-slide');
+        const totalSlides = slides.length;
+        let currentIndex = 0;
+        let isDragging = false;
+        let startPos = 0;
+        let currentTranslate = 0;
+        let prevTranslate = 0;
+        let animationID;
+        let autoRotateInterval;
+        let touchStarted = false;
+
+        slides.forEach((_, i) => {
+            const dot = document.createElement('button');
+            dot.classList.add('carousel-dot');
+            if (i === 0) dot.classList.add('active');
+            dot.addEventListener('click', () => goToSlide(i));
+            indicatorsContainer.appendChild(dot);
+        });
+
+        const dots = indicatorsContainer.querySelectorAll('.carousel-dot');
+
+        function getSlideWidth() {
+            return slides[0].offsetWidth + 16;
+        }
+
+        function goToSlide(index) {
+            currentIndex = index;
+            const slideWidth = getSlideWidth();
+            currentTranslate = -index * slideWidth;
+            prevTranslate = currentTranslate;
+            setSliderPosition();
+            updateDots();
+        }
+
+        function updateDots() {
+            dots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === currentIndex);
+            });
+        }
+
+        function setSliderPosition() {
+            track.style.transform = `translateX(${currentTranslate}px)`;
+        }
+
+        function animation() {
+            setSliderPosition();
+            if (isDragging) requestAnimationFrame(animation);
+        }
+
+        function startAutoRotate() {
+            autoRotateInterval = setInterval(() => {
+                if (!isDragging && !touchStarted) {
+                    currentIndex = (currentIndex + 1) % totalSlides;
+                    goToSlide(currentIndex);
+                }
+            }, 4000);
+        }
+
+        function stopAutoRotate() {
+            clearInterval(autoRotateInterval);
+        }
+
+        track.addEventListener('touchstart', (e) => {
+            touchStarted = true;
+            stopAutoRotate();
+            isDragging = true;
+            startPos = e.touches[0].clientX;
+            animationID = requestAnimationFrame(animation);
+            track.style.transition = 'none';
+        }, { passive: true });
+
+        track.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
+            const currentPos = e.touches[0].clientX;
+            const diff = currentPos - startPos;
+            currentTranslate = prevTranslate + diff;
+        }, { passive: true });
+
+        track.addEventListener('touchend', () => {
+            isDragging = false;
+            cancelAnimationFrame(animationID);
+            track.style.transition = 'transform 0.5s cubic-bezier(0.23, 1, 0.32, 1)';
+
+            const slideWidth = getSlideWidth();
+            const movedBy = currentTranslate - prevTranslate;
+
+            if (movedBy < -50 && currentIndex < totalSlides - 1) {
+                currentIndex++;
+            } else if (movedBy > 50 && currentIndex > 0) {
+                currentIndex--;
+            }
+
+            goToSlide(currentIndex);
+        });
+
+        track.addEventListener('mousedown', (e) => {
+            touchStarted = true;
+            stopAutoRotate();
+            isDragging = true;
+            startPos = e.clientX;
+            animationID = requestAnimationFrame(animation);
+            track.style.transition = 'none';
+        });
+
+        track.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            const currentPos = e.clientX;
+            const diff = currentPos - startPos;
+            currentTranslate = prevTranslate + diff;
+        });
+
+        track.addEventListener('mouseup', () => {
+            isDragging = false;
+            cancelAnimationFrame(animationID);
+            track.style.transition = 'transform 0.5s cubic-bezier(0.23, 1, 0.32, 1)';
+
+            const slideWidth = getSlideWidth();
+            const movedBy = currentTranslate - prevTranslate;
+
+            if (movedBy < -50 && currentIndex < totalSlides - 1) {
+                currentIndex++;
+            } else if (movedBy > 50 && currentIndex > 0) {
+                currentIndex--;
+            }
+
+            goToSlide(currentIndex);
+        });
+
+        track.addEventListener('mouseleave', () => {
+            if (isDragging) {
+                isDragging = false;
+                cancelAnimationFrame(animationID);
+                track.style.transition = 'transform 0.5s cubic-bezier(0.23, 1, 0.32, 1)';
+                goToSlide(currentIndex);
+            }
+        });
+
+        if (window.innerWidth <= 768) {
+            startAutoRotate();
+        }
+
+        window.addEventListener('resize', () => {
+            goToSlide(currentIndex);
+            if (window.innerWidth <= 768) {
+                startAutoRotate();
+            } else {
+                stopAutoRotate();
+            }
+        });
+    </script>
+
+</body>
+</html>
