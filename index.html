@@ -40,18 +40,24 @@
             --gold-bright: #d4af37;
             --gold-dim: #8a7350;
             --text-primary: #e8e0d4;
-            --text-secondary: #a89b8c;
-            --text-muted: #6b5f52;
+            --text-secondary: #cfc3b4;
+            --text-muted: #8f8170;
+            --image-ratio: 1280 / 853;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-        html, body {
+        html,
+        body {
             width: 100%;
             height: 100%;
             overflow: hidden;
             font-family: 'Inter', sans-serif;
-            background-color: var(--bg-deep);
+            background: var(--bg-deep);
             color: var(--text-primary);
             -webkit-font-smoothing: antialiased;
         }
@@ -61,7 +67,7 @@
             position: fixed;
             inset: 0;
             background:
-                radial-gradient(circle at center, rgba(201, 169, 110, 0.055) 0%, transparent 46%),
+                radial-gradient(circle at center, rgba(201, 169, 110, 0.065) 0%, transparent 48%),
                 var(--bg-deep);
             z-index: 1000;
             display: flex;
@@ -79,65 +85,36 @@
             pointer-events: none;
         }
 
-        .intro-seal-container {
+        .intro-copy-container {
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 1rem;
-            perspective: 1000px;
             text-align: center;
             padding: 2rem;
         }
 
-        .intro-seal {
-            width: clamp(108px, 13vw, 156px);
-            height: clamp(108px, 13vw, 156px);
-            border-radius: 50%;
-            object-fit: cover;
-            transform-style: preserve-3d;
-            backface-visibility: hidden;
-            filter: drop-shadow(0 0 22px rgba(201, 169, 110, 0.22));
-            animation: seal-coin-clean 2.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-
-        @keyframes seal-coin-clean {
-            0% {
-                opacity: 0;
-                transform: scale(3.4) rotateY(-420deg);
-                filter: blur(1.8px) drop-shadow(0 0 32px rgba(201, 169, 110, 0.22));
-            }
-            38% {
-                opacity: 1;
-                transform: scale(2.1) rotateY(-230deg);
-                filter: blur(0.5px) drop-shadow(0 0 28px rgba(201, 169, 110, 0.24));
-            }
-            100% {
-                opacity: 1;
-                transform: scale(1) rotateY(0deg);
-                filter: blur(0) drop-shadow(0 0 18px rgba(201, 169, 110, 0.2));
-            }
-        }
-
         .intro-title {
             font-family: 'Cinzel', serif;
-            font-size: clamp(1.35rem, 3.5vw, 2.65rem);
+            font-size: clamp(1.55rem, 4vw, 3rem);
             font-weight: 400;
             letter-spacing: 0.42em;
             color: var(--gold-primary);
             opacity: 0;
-            transform: translateY(10px);
+            transform: translateY(12px);
             margin-left: 0.42em;
-            animation: intro-copy-in 0.85s ease 1.65s forwards;
+            animation: intro-copy-in 1s ease 0.25s forwards;
         }
 
         .intro-tagline {
             font-family: 'Cormorant Garamond', serif;
-            font-size: clamp(0.95rem, 1.8vw, 1.2rem);
+            font-size: clamp(0.95rem, 1.8vw, 1.25rem);
             font-weight: 300;
             color: var(--text-secondary);
             opacity: 0;
-            transform: translateY(8px);
-            animation: intro-copy-in 0.85s ease 1.95s forwards;
+            transform: translateY(10px);
+            line-height: 1.45;
+            animation: intro-copy-in 1s ease 0.65s forwards;
         }
 
         .intro-tagline em {
@@ -147,17 +124,22 @@
         }
 
         @keyframes intro-copy-in {
-            to { opacity: 1; transform: translateY(0); }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
-        .intro-overlay.leaving .intro-seal,
         .intro-overlay.leaving .intro-title,
         .intro-overlay.leaving .intro-tagline {
-            animation: intro-soft-out 0.65s ease forwards;
+            animation: intro-soft-out 0.7s ease forwards;
         }
 
         @keyframes intro-soft-out {
-            to { opacity: 0; transform: translateY(-6px) scale(0.985); }
+            to {
+                opacity: 0;
+                transform: translateY(-6px) scale(0.985);
+            }
         }
 
         /* ===== MAIN LANDING ===== */
@@ -170,63 +152,243 @@
             background: var(--bg-deep);
         }
 
-        .main-landing.visible { opacity: 1; }
-
-        /* ===== DESKTOP PANORAMA ===== */
-        .panoramic-bg {
-            position: fixed;
-            inset: 0;
-            width: 100vw;
-            height: 100vh;
-            object-fit: cover;
-            object-position: center;
-            z-index: 1;
-            user-select: none;
-            -webkit-user-drag: none;
+        .main-landing.visible {
+            opacity: 1;
         }
 
-        .about-link {
+        /* 
+           Cover scene keeps text locked to the blank canvas.
+           The blank image and all overlay writing scale together.
+        */
+        .scene {
             position: fixed;
-            top: clamp(1rem, 3vw, 2.4rem);
-            right: clamp(1rem, 3vw, 3rem);
-            z-index: 50;
+            top: 50%;
+            left: 50%;
+            width: max(100vw, calc(100vh * var(--image-ratio)));
+            height: max(100vh, calc(100vw / var(--image-ratio)));
+            transform: translate(-50%, -50%);
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .scene-bg {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            user-select: none;
+            -webkit-user-drag: none;
+            z-index: 1;
+        }
+
+        .scene-copy {
+            position: absolute;
+            inset: 0;
+            z-index: 4;
+            pointer-events: none;
+        }
+
+        /* ===== TOP TITLE AREA ===== */
+        .landing-title {
+            position: absolute;
+            top: 3.6%;
+            left: 50%;
+            transform: translateX(-50%);
             font-family: 'Cinzel', serif;
-            font-size: clamp(0.68rem, 1vw, 0.85rem);
+            font-size: clamp(2rem, 5.1vw, 4.65rem);
+            font-weight: 400;
             letter-spacing: 0.32em;
-            color: var(--gold-primary);
+            margin-left: 0.32em;
+            color: #d7b58a;
+            text-shadow:
+                0 1px 0 rgba(255, 235, 190, 0.28),
+                0 0 18px rgba(0, 0, 0, 0.45);
+            white-space: nowrap;
+        }
+
+        .title-divider {
+            position: absolute;
+            top: 12.1%;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            color: #c9a96e;
+            opacity: 0.84;
+        }
+
+        .title-divider::before,
+        .title-divider::after {
+            content: '';
+            display: block;
+            width: clamp(48px, 8vw, 110px);
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(201, 169, 110, 0.86), transparent);
+        }
+
+        .title-star {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(0.9rem, 1.4vw, 1.4rem);
+            line-height: 1;
+        }
+
+        .landing-subtitle {
+            position: absolute;
+            top: 14.1%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 44%;
+            text-align: center;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(0.95rem, 1.75vw, 1.45rem);
+            font-weight: 400;
+            line-height: 1.08;
+            letter-spacing: 0.08em;
+            color: #d9cabb;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.55);
+        }
+
+        .landing-subtitle em {
+            font-style: italic;
+            color: #efe3d3;
+            letter-spacing: 0.06em;
+        }
+
+        /* ===== ABOUT LINK ===== */
+        .about-link {
+            position: absolute;
+            top: 3.2%;
+            right: 2.4%;
+            z-index: 10;
+            font-family: 'Cinzel', serif;
+            font-size: clamp(0.65rem, 1vw, 0.9rem);
+            letter-spacing: 0.34em;
+            color: #d7b58a;
             text-decoration: none;
             text-transform: uppercase;
-            padding: 0.7rem 0.2rem 0.7rem 0.9rem;
-            opacity: 0.9;
+            opacity: 0.94;
+            pointer-events: auto;
+            text-shadow: 0 1px 10px rgba(0, 0, 0, 0.55);
             transition: color 0.3s ease, opacity 0.3s ease, text-shadow 0.3s ease;
         }
 
         .about-link::after {
             content: '•';
-            margin-left: 0.65rem;
+            margin-left: 0.75rem;
             color: var(--gold-bright);
         }
 
         .about-link:hover {
             color: var(--gold-bright);
             opacity: 1;
-            text-shadow: 0 0 18px rgba(201, 169, 110, 0.35);
+            text-shadow: 0 0 18px rgba(201, 169, 110, 0.42);
         }
 
+        /* ===== DOOR TEXT ===== */
+        .door-copy {
+            position: absolute;
+            top: 72.7%;
+            transform: translateX(-50%);
+            width: 16%;
+            text-align: center;
+            text-shadow:
+                0 2px 8px rgba(0, 0, 0, 0.72),
+                0 0 16px rgba(0, 0, 0, 0.45);
+        }
+
+        .door-copy.atrium { left: 10.6%; }
+        .door-copy.labs { left: 30.2%; }
+        .door-copy.press { left: 49.1%; }
+        .door-copy.research { left: 68.1%; }
+        .door-copy.founder { left: 88.5%; }
+
+        .door-title {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(0.9rem, 2vw, 1.75rem);
+            font-weight: 400;
+            letter-spacing: 0.26em;
+            margin-left: 0.26em;
+            color: #ead6bc;
+            text-transform: uppercase;
+        }
+
+        .door-star {
+            display: block;
+            margin: 0.35rem auto 0.42rem;
+            font-family: 'Cinzel', serif;
+            font-size: clamp(0.45rem, 0.75vw, 0.68rem);
+            color: #c9a96e;
+            opacity: 0.76;
+        }
+
+        .door-description {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(0.68rem, 1.15vw, 1rem);
+            font-weight: 400;
+            line-height: 1.22;
+            color: #e8ded1;
+            max-width: 13rem;
+            margin: 0 auto;
+        }
+
+        .door-line {
+            display: block;
+            width: clamp(22px, 3vw, 42px);
+            height: 1px;
+            margin: 0.75rem auto 0;
+            background: rgba(201, 169, 110, 0.84);
+        }
+
+        /* ===== BOTTOM MOTTO ===== */
+        .bottom-values {
+            position: absolute;
+            bottom: 5.6%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 58%;
+            text-align: center;
+            font-family: 'Cinzel', serif;
+            font-size: clamp(0.5rem, 0.86vw, 0.82rem);
+            font-weight: 400;
+            letter-spacing: 0.34em;
+            color: #d6c0a2;
+            text-transform: uppercase;
+            opacity: 0.9;
+            white-space: nowrap;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.75);
+        }
+
+        .bottom-url {
+            position: absolute;
+            bottom: 2.2%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'Cinzel', serif;
+            font-size: clamp(0.72rem, 1.22vw, 1rem);
+            letter-spacing: 0.44em;
+            margin-left: 0.44em;
+            color: #c9a96e;
+            text-transform: uppercase;
+            opacity: 0.94;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.72);
+            white-space: nowrap;
+        }
+
+        /* ===== DESKTOP CLICK ZONES ===== */
         .doors-overlay {
-            position: fixed;
-            left: 0;
-            right: 0;
-            top: 16.5vh;
-            bottom: 9.5vh;
-            display: flex;
-            z-index: 5;
+            position: absolute;
+            inset: 0;
+            z-index: 6;
             pointer-events: none;
         }
 
         .door-zone {
-            flex: 1;
-            position: relative;
+            position: absolute;
+            top: 15%;
+            bottom: 12%;
             text-decoration: none;
             pointer-events: auto;
             cursor: pointer;
@@ -235,10 +397,31 @@
             isolation: isolate;
         }
 
-        /*
-          Integrated hover: no borders, no obvious rectangle.
-          It behaves like a soft light passing over the door image.
-        */
+        .door-zone.atrium-zone {
+            left: 0.4%;
+            width: 20.6%;
+        }
+
+        .door-zone.labs-zone {
+            left: 22%;
+            width: 16.2%;
+        }
+
+        .door-zone.press-zone {
+            left: 39.4%;
+            width: 17.8%;
+        }
+
+        .door-zone.research-zone {
+            left: 58.8%;
+            width: 17.8%;
+        }
+
+        .door-zone.founder-zone {
+            left: 78.2%;
+            width: 20.4%;
+        }
+
         .door-zone::before {
             content: '';
             position: absolute;
@@ -301,7 +484,6 @@
             left: 11vw;
             width: 78vw;
             height: 76vh;
-            border-radius: 0;
             overflow: hidden;
             text-decoration: none;
             box-shadow: 0 18px 55px rgba(0, 0, 0, 0.58);
@@ -372,8 +554,7 @@
         }
 
         @media (max-width: 768px) {
-            .panoramic-bg,
-            .doors-overlay {
+            .scene {
                 display: none;
             }
 
@@ -382,17 +563,13 @@
             }
 
             .about-link {
+                position: fixed;
                 z-index: 80;
                 top: 0.9rem;
                 right: 0.8rem;
                 font-size: 0.68rem;
                 letter-spacing: 0.24em;
                 padding: 0.8rem 0.1rem 0.8rem 0.8rem;
-            }
-
-            .intro-seal {
-                width: 124px;
-                height: 124px;
             }
 
             .intro-title {
@@ -417,13 +594,23 @@
         }
 
         @media (min-width: 769px) {
-            .carousel-section { display: none !important; }
+            .carousel-section {
+                display: none !important;
+            }
         }
 
         @media (prefers-reduced-motion: reduce) {
-            .intro-overlay { display: none; }
-            .main-landing { opacity: 1; }
-            .carousel-slide { transition: none; }
+            .intro-overlay {
+                display: none;
+            }
+
+            .main-landing {
+                opacity: 1;
+            }
+
+            .carousel-slide {
+                transition: none;
+            }
         }
     </style>
 </head>
@@ -432,43 +619,108 @@
 
     <!-- INTRO OVERLAY -->
     <div class="intro-overlay" id="introOverlay">
-        <div class="intro-seal-container">
-            <img src="seal.jpg" alt="MetaVoxa Wax Seal" class="intro-seal" id="introSeal">
+        <div class="intro-copy-container">
             <h1 class="intro-title">METAVOXA</h1>
-            <p class="intro-tagline">An institutional ecosystem for surfacing<br><em>what systems do not see.</em></p>
+            <p class="intro-tagline">
+                An institutional ecosystem for surfacing<br>
+                <em>what systems do not see.</em>
+            </p>
         </div>
     </div>
 
     <!-- MAIN LANDING -->
     <main class="main-landing" id="mainLanding">
-        <a href="about.html" class="about-link" aria-label="About MetaVoxa">About</a>
 
-        <!-- DESKTOP: FULL FIVE-DOOR IMAGE -->
-        <img src="all-five.jpg" alt="MetaVoxa — Five Rooms" class="panoramic-bg" id="panoramicBg">
+        <!-- DESKTOP: BLANK IMAGE WITH CODE-GENERATED TEXT OVERLAY -->
+        <section class="scene" aria-label="MetaVoxa five rooms">
+            <img src="all-five-blank.jpg" alt="MetaVoxa — Five Rooms" class="scene-bg">
 
-        <nav class="doors-overlay" id="doorsOverlay" aria-label="MetaVoxa rooms">
-            <a href="https://atrium.metavoxa.com" class="door-zone" aria-label="Enter Atrium"></a>
-            <a href="https://labs.metavoxa.com" class="door-zone" aria-label="Enter Labs"></a>
-            <a href="https://press.metavoxa.com" class="door-zone" aria-label="Enter Press"></a>
-            <a href="https://research.metavoxa.com" class="door-zone" aria-label="Enter Research"></a>
-            <a href="https://www.marthakoroma.com" class="door-zone" aria-label="Meet the Founder"></a>
-        </nav>
+            <div class="scene-copy" aria-hidden="true">
+                <h1 class="landing-title">METAVOXA</h1>
+
+                <div class="title-divider">
+                    <span class="title-star">*</span>
+                </div>
+
+                <p class="landing-subtitle">
+                    An institutional ecosystem for surfacing<br>
+                    <em>what systems do not see.</em>
+                </p>
+
+                <a href="about.html" class="about-link" aria-label="About MetaVoxa">About</a>
+
+                <div class="door-copy atrium">
+                    <h2 class="door-title">Atrium</h2>
+                    <span class="door-star">*</span>
+                    <p class="door-description">The full architecture of the mind behind the work.</p>
+                    <span class="door-line"></span>
+                </div>
+
+                <div class="door-copy labs">
+                    <h2 class="door-title">Labs</h2>
+                    <span class="door-star">*</span>
+                    <p class="door-description">Where questions are investigated and frameworks are built.</p>
+                    <span class="door-line"></span>
+                </div>
+
+                <div class="door-copy press">
+                    <h2 class="door-title">Press</h2>
+                    <span class="door-star">*</span>
+                    <p class="door-description">Where lived experience becomes language.</p>
+                    <span class="door-line"></span>
+                </div>
+
+                <div class="door-copy research">
+                    <h2 class="door-title">Research</h2>
+                    <span class="door-star">*</span>
+                    <p class="door-description">Where evidence is recorded, verified, and made available.</p>
+                    <span class="door-line"></span>
+                </div>
+
+                <div class="door-copy founder">
+                    <h2 class="door-title">Founder</h2>
+                    <span class="door-star">*</span>
+                    <p class="door-description">The work, trajectory, and perspective behind MetaVoxa.</p>
+                    <span class="door-line"></span>
+                </div>
+
+                <div class="bottom-values">
+                    Systems-Aware · Evidence-Driven · Interdisciplinary · Inclusive · Institutional
+                </div>
+
+                <div class="bottom-url">MetaVoxa.com</div>
+            </div>
+
+            <nav class="doors-overlay" aria-label="MetaVoxa rooms">
+                <a href="https://atrium.metavoxa.com" class="door-zone atrium-zone" aria-label="Enter Atrium"></a>
+                <a href="https://labs.metavoxa.com" class="door-zone labs-zone" aria-label="Enter Labs"></a>
+                <a href="https://press.metavoxa.com" class="door-zone press-zone" aria-label="Enter Press"></a>
+                <a href="https://research.metavoxa.com" class="door-zone research-zone" aria-label="Enter Research"></a>
+                <a href="https://www.marthakoroma.com" class="door-zone founder-zone" aria-label="Meet the Founder"></a>
+            </nav>
+        </section>
 
         <!-- MOBILE: ROUND / ROTATING CAROUSEL -->
         <section class="carousel-section" id="carouselSection" aria-label="MetaVoxa carousel">
+            <a href="about.html" class="about-link" aria-label="About MetaVoxa">About</a>
+
             <div class="carousel-stage" id="carouselStage">
                 <a href="https://atrium.metavoxa.com" class="carousel-slide" aria-label="Enter Atrium">
                     <img src="atrium.jpg" alt="Atrium" class="carousel-slide-bg">
                 </a>
+
                 <a href="https://labs.metavoxa.com" class="carousel-slide" aria-label="Enter Labs">
                     <img src="labs.jpg" alt="Labs" class="carousel-slide-bg">
                 </a>
+
                 <a href="https://press.metavoxa.com" class="carousel-slide" aria-label="Enter Press">
                     <img src="press.jpg" alt="Press" class="carousel-slide-bg">
                 </a>
+
                 <a href="https://research.metavoxa.com" class="carousel-slide" aria-label="Enter Research">
                     <img src="research.jpg" alt="Research" class="carousel-slide-bg">
                 </a>
+
                 <a href="https://www.marthakoroma.com" class="carousel-slide" aria-label="Meet the Founder">
                     <img src="founder.jpg" alt="Founder" class="carousel-slide-bg">
                 </a>
@@ -480,7 +732,7 @@
     </main>
 
     <script>
-        // ===== INTRO: coin zooms out, spins, text appears, then landing fades in =====
+        // ===== INTRO: simple title card, then landing fades in =====
         const introOverlay = document.getElementById('introOverlay');
         const mainLanding = document.getElementById('mainLanding');
 
@@ -490,11 +742,11 @@
             setTimeout(() => {
                 introOverlay.classList.add('hidden');
                 mainLanding.classList.add('visible');
-            }, 820);
+            }, 760);
         }
 
         window.addEventListener('load', () => {
-            setTimeout(endIntro, 4300);
+            setTimeout(endIntro, 2500);
         });
 
         // ===== MOBILE 3D CAROUSEL =====
@@ -514,11 +766,13 @@
             const dot = document.createElement('button');
             dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
             dot.setAttribute('aria-label', `Go to slide ${i + 1}`);
+
             dot.addEventListener('click', () => {
                 stopAutoRotate();
                 goToSlide(i);
                 startAutoRotate();
             });
+
             indicatorsContainer.appendChild(dot);
         });
 
@@ -548,12 +802,14 @@
                     slide.style.transform = 'translateX(0) translateZ(0) rotateY(0deg) scale(1)';
                 } else if (abs === 1) {
                     const direction = offset > 0 ? 1 : -1;
+
                     slide.style.opacity = '0.48';
                     slide.style.filter = 'brightness(0.58) saturate(0.72)';
                     slide.style.zIndex = '10';
                     slide.style.transform = `translateX(${direction * 58}vw) translateZ(-170px) rotateY(${direction * -28}deg) scale(0.86)`;
                 } else {
                     const direction = offset > 0 ? 1 : -1;
+
                     slide.style.opacity = '0';
                     slide.style.filter = 'brightness(0.4) saturate(0.5)';
                     slide.style.zIndex = '1';
@@ -561,7 +817,9 @@
                 }
             });
 
-            dots.forEach((dot, i) => dot.classList.toggle('active', i === currentIndex));
+            dots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === currentIndex);
+            });
         }
 
         function goToSlide(index) {
@@ -579,6 +837,7 @@
 
         function startAutoRotate() {
             if (window.innerWidth > 768) return;
+
             stopAutoRotate();
             autoRotateInterval = setInterval(nextSlide, 4200);
         }
@@ -664,8 +923,12 @@
 
         window.addEventListener('resize', () => {
             updateCarousel();
-            if (window.innerWidth <= 768) startAutoRotate();
-            else stopAutoRotate();
+
+            if (window.innerWidth <= 768) {
+                startAutoRotate();
+            } else {
+                stopAutoRotate();
+            }
         });
 
         updateCarousel();
